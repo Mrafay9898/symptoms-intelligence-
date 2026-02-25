@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Pill, Activity, Plus, X, Thermometer, ShieldAlert } from 'lucide-react';
+import { Pill, Activity, Plus, X, Thermometer, ShieldAlert, Mic } from 'lucide-react';
 
 interface SymptomInputProps {
     onSubmit: (data: { text: string; medications: string[]; vitals: Record<string, string> }) => void;
@@ -10,6 +10,7 @@ const SymptomInput: React.FC<SymptomInputProps> = ({ onSubmit }) => {
     const [meds, setMeds] = useState<string[]>([]);
     const [currentMed, setCurrentMed] = useState('');
     const [vitals, setVitals] = useState({ temp: '', hr: '', bp: '' });
+    const [isListening, setIsListening] = useState(false);
 
     const addMed = () => {
         if (currentMed.trim()) {
@@ -22,10 +23,41 @@ const SymptomInput: React.FC<SymptomInputProps> = ({ onSubmit }) => {
         setMeds(meds.filter((_, i) => i !== index));
     };
 
+    const startListening = () => {
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('Your browser does not support speech recognition. Please try Chrome or Edge.');
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = () => setIsListening(true);
+        recognition.onend = () => setIsListening(false);
+        recognition.onresult = (event: any) => {
+            const transcript = event.results[0][0].transcript;
+            setText((prev) => prev ? `${prev} ${transcript}` : transcript);
+        };
+
+        recognition.start();
+    };
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-                <h2 className="text-2xl font-bold text-slate-800 mb-2">Describe symptoms</h2>
+                <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-2xl font-bold text-slate-800">Describe symptoms</h2>
+                    <button
+                        onClick={startListening}
+                        className={`p-2 rounded-full transition-all ${isListening ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                        title="Voice Input"
+                    >
+                        <Mic className={`w-5 h-5 ${isListening ? 'fill-current' : ''}`} />
+                    </button>
+                </div>
                 <textarea
                     value={text}
                     onChange={(e) => setText(e.target.value)}
@@ -112,6 +144,5 @@ const SymptomInput: React.FC<SymptomInputProps> = ({ onSubmit }) => {
         </div>
     );
 };
-
 
 export default SymptomInput;

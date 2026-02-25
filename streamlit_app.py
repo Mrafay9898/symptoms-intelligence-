@@ -4,6 +4,7 @@ from backend.ai_pipeline import engine
 from backend.medication_checker import medication_safety
 import json
 import os
+from streamlit_mic_recorder import mic_recorder
 
 # Page Config
 st.set_page_config(
@@ -50,6 +51,21 @@ st.markdown('<div class="sub-header">Safe, Reasoned, and Explainable Clinical Su
 with st.container():
     st.subheader("Assessment Details")
     symptom_text = st.text_area("Describe your symptoms (e.g., 'Severe headache for 2 days')", height=100)
+    
+    # Voice Input
+    st.write("🎤 Or record your symptoms:")
+    audio = mic_recorder(
+        start_prompt="Start Recording",
+        stop_prompt="Stop Recording",
+        key='recorder'
+    )
+    
+    if audio:
+        st.audio(audio['bytes'])
+        st.info("Audio captured! In a production environment, this would be transcribed using Whisper API.")
+        # For the demo, we could append a note to the text area
+        if "Voice recording attached" not in symptom_text:
+            symptom_text += " (Voice recording attached)"
     
     col1, col2 = st.columns(2)
     with col1:
