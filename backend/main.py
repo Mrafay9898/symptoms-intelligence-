@@ -8,7 +8,20 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# ... (CORS middleware stays same)
+# CORS configuration
+origins = [
+    "http://localhost:5173",
+    "https://*.render.com",
+    "https://symptoms-intelligence.onrender.com", # Placeholder for user's eventual domain
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # For hackathon convenience, ideally restricted in prod
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
