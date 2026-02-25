@@ -51,7 +51,17 @@ st.markdown('<div class="sub-header">Safe, Reasoned, and Explainable Clinical Su
 # Input Section
 with st.container():
     st.subheader("Assessment Details")
-    symptom_text = st.text_area("Describe your symptoms (e.g., 'Severe headache for 2 days')", height=100)
+    if 'symptom_input' not in st.session_state:
+        st.session_state.symptom_input = ""
+        
+    symptom_text = st.text_area(
+        "Describe your symptoms (e.g., 'Severe headache for 2 days')", 
+        value=st.session_state.symptom_input,
+        height=100,
+        key="symptom_area"
+    )
+    # Update state if manually typed
+    st.session_state.symptom_input = symptom_text
     
     # Voice Input
     st.write("🎤 Or record your symptoms:")
@@ -62,11 +72,31 @@ with st.container():
     )
     
     if audio:
-        st.audio(audio['bytes'])
-        st.info("Audio captured! In a production environment, this would be transcribed using Whisper API.")
-        # For the demo, we could append a note to the text area
-        if "Voice recording attached" not in symptom_text:
-            symptom_text += " (Voice recording attached)"
+        with st.spinner("Transcribing your voice..."):
+            try:
+                from openai import OpenAI
+                client = OpenAI() # Uses OPENAI_API_KEY from environment
+                
+                # Save bytes to temp file for Whisper API
+                import tempfile
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+                    tmp.write(audio['bytes'])
+                    tmp_path = tmp.name
+                
+                with open(tmp_path, "rb") as audio_file:
+                    transcription = client.audio.transcriptions.create(
+                        model="whisper-1", 
+                        file=audio_file
+                    )
+                
+                if transcription.text:
+                    symptom_text = transcription.text
+                    st.success(f"Transcribed: {symptom_text}")
+                    # Update session state so it persists in the text area
+                    st.session_state.symptom_input = symptom_text
+            except Exception as e:
+                st.error(f"Transcription failed: {str(e)}")
+                st.info("Audio captured, but transcription requires a valid OPENAI_API_KEY.")
     
     col1, col2 = st.columns(2)
     with col1:
