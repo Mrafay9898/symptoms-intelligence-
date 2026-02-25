@@ -17,6 +17,7 @@ class MedicalKnowledgeBase:
                 "symptoms": ["fever", "chills", "body ache"],
                 "protocol": "Ensure hydration, rest, and monitor temperature. Use paracetamol if needed. Consult if fever persists > 3 days.",
                 "source": "WHO Clinical Guidelines"
+            },
             {"condition": "Chest Pain", "protocol": "Immediate ER triage recommended. Perform ECG. Administer Aspirin if no contraindications.", "source": "WHO Emergency Guidelines"},
             {"condition": "Abdominal Pain", "protocol": "Assess for rebound tenderness. Keep NPO. Routine surgical consult.", "source": "Clinical Triage Manual"},
             {"condition": "Fever", "protocol": "Increase fluid intake. Paracetamol for fever >38.5C. Monitor for rash.", "source": "General Practice Protocols"}
