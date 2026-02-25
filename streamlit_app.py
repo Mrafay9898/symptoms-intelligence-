@@ -99,7 +99,7 @@ if st.button("Analyze Now", type="primary", use_container_width=True):
             st.markdown(f"""
                 <div class="triage-card {t_class}">
                     <h2 style="margin:0; color: #1e293b;">{t_level}</h2>
-                    <p style="margin:0.5rem 0 0 0; color: #475569;">{analysis['summary']}</p>
+                    <p style="margin:0.5rem 0 0 0; color: #475569;">{analysis['reasoning']}</p>
                 </div>
             """, unsafe_allow_html=True)
 

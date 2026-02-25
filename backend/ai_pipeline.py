@@ -114,6 +114,7 @@ class SymptomIntelligenceEngine:
             "symptoms": extracted_symptoms,
             "triage_level": triage_level,
             "reasoning": reasoning,
+            "summary": reasoning,
             "recommendations": recommendations[:3],
             "safety_alerts": safety_alerts,
             "confidence_score": 0.92 if protocol_summaries else 0.82,
