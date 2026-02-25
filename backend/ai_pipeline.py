@@ -11,6 +11,7 @@ class SymptomIntelligenceEngine:
         self.knowledge_base_ready = False
         self.model_name = "gpt-4-turbo"
         self.api_key = os.getenv("OPENAI_API_KEY")
+        self.is_fully_configured = bool(self.api_key and self.api_key.startswith("sk-"))
 
     async def extract_symptoms(self, text: str) -> List[Dict[str, Any]]:
         """

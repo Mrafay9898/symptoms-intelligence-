@@ -48,6 +48,21 @@ st.markdown("""
 st.markdown('<div class="main-header">Symptom Intelligence 🏥</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Safe, Reasoned, and Explainable Clinical Support</div>', unsafe_allow_html=True)
 
+# API Key Diagnostic Doctor
+if not engine.api_key or not engine.api_key.startswith("sk-"):
+    st.error("🚨 **API Key Missing or Invalid**")
+    st.warning("""
+        Your AI features (analysis, reasoning, and voice transcription) will not work without a valid OpenAI API Key.
+        
+        **How to fix:**
+        1. Go to **Streamlit Dashboard** -> **Settings** -> **Secrets**.
+        2. Paste: `OPENAI_API_KEY = "your-key-here"`.
+        3. Save and the app will restart.
+    """)
+    st.info("💡 Tip: You can get your key at [platform.openai.com](https://platform.openai.com/api-keys)")
+else:
+    st.sidebar.success("✅ AI Engine: Online (Connected to OpenAI)")
+
 # Input Section
 with st.container():
     st.subheader("Assessment Details")
